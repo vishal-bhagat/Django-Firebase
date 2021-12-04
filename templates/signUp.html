@@ -1,0 +1,37 @@
+{% extends "masters/base.html" %}
+
+{% block content %}
+
+<div class="row mt-4">
+    <div class="d-flex justify-content-center">
+        <div class="card">
+            <div class="card-body">
+                <form action="{% url 'postSignUp' %}" method="post">
+                    {% csrf_token %}
+                    {% if message %}
+                        <label for="message" class="text-danger">{{ message }}</label>
+                    {% endif %}
+                    <div class="mb-3">
+                        <label for="exampleInputName" class="form-label">Name</label>
+                        <input type="name" name="name" class="form-control" id="exampleInputName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputEmail1" class="form-label">Email address</label>
+                        <input type="email" name="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" required>
+                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="exampleInputPassword1" class="form-label">Password</label>
+                        <input type="password" name="password" class="form-control" id="exampleInputPassword1" required>
+                    </div>
+                    <div class="d-flex align-items-center justify-content-between">
+                        <button type="submit" class="btn btn-success">Sign Up</button>
+                        <a href="{% url 'login' %}" type="submit" class="float-end">Sign In</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

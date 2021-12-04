@@ -1,0 +1,100 @@
+{% extends "masters/base.html" %}
+
+{% block content %}
+<div class="row mt-4">
+    <div class="d-flex justify-content-center">
+        <div class="card col-lg-6 col-md-8 col-12">
+            <div class="card-body">
+                {% if message %}
+                    <div class="alert alert-primary" role="alert">
+                        {{ message }}
+                    </div>
+                {% endif %}
+                <form action="{% url 'postDashboard' %}" method="post">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        Name : {{ name }}
+                    </div>
+                    <div class="mb-3">
+                        <label for="address" class="mb-1">Address :</label>
+                        <textarea name="address" id="address" cols="30" rows="3" class="form-control">{% if address %}{{ address }}{% endif %}</textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="dob" class="mb-1">Date of birth :</label>
+                        <input type="date" name="dob" value="{{ dob }}" class="form-control" id="dob">
+                    </div>
+                    <div class="mb-3">
+                        <label for="profileImage" class="mb-1">Profile Image</label>
+
+                        {% if url %}
+                            <div>
+                                <img src="{{ url }}" alt="image" style="width:150px; height:150px;">
+                            </div>
+                            <label for="" class="text-primary" id="update" onclick="update()">Update</label>
+                        {% else %}
+                            <input type="file" name="files[]" class="form-control" id="files">
+                            <input type="hidden" name="url" id="url">
+                            <button type="button" onclick="uploadimage()" class="btn btn-outline-primary mt-3">Upload</button>
+                        {% endif %}
+
+<!--                        <div style="display:none" id="displayDiv">-->
+<!--                            <input type="file" name="files[]" class="form-control" id="files">-->
+<!--                            <input type="hidden" name="url" id="url">-->
+<!--                            <button type="button" onclick="uploadimage()" class="btn btn-outline-primary mt-3">Upload</button>-->
+<!--                        </div>-->
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        {% if address %}
+                            <button type="submit" class="btn btn-success mb-3">Update</button>
+                        {% else %}
+                            <button type="submit" class="btn btn-success mb-3">Save</button>
+                        {% endif %}
+                        <a href="{% url 'logout' %}" class="link-danger">Log Out</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/3.7.4/firebase.js"></script>
+<script>
+      var firebaseConfig = {
+        apiKey: "AIzaSyAGeLBOkIuVxZCtdCClTOKdrjnzg7yAG-w",
+        authDomain: "krishworks-7d6d8.firebaseapp.com",
+        databaseURL: "https://krishworks-7d6d8-default-rtdb.firebaseio.com",
+        projectId: "krishworks-7d6d8",
+        storageBucket: "krishworks-7d6d8.appspot.com",
+        messagingSenderId: "828238082663",
+        appId: "1:828238082663:web:c72ab112bc4cc2e39fdac2"
+      };
+      firebase.initializeApp(firebaseConfig);
+      function uploadimage(){
+      var storage = firebase.storage();
+      var file=document.getElementById("files").files[0];
+      var storageref=storage.ref();
+      var thisref=storageref.child(file.name).put(file);
+      thisref.on('state_changed',function(snapshot) {
+      console.log('Done');
+
+      }, function(error) {
+      console.log('Error',error);
+
+    }, function() {
+      // Uploaded completed successfully, now we can get the download URL
+      thisref.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+        console.log('File available at', downloadURL);
+        document.getElementById("url").value=downloadURL;
+        alert('uploaded successfully');
+      });
+    });
+    }
+
+
+    function update(){
+        document.getElementById('displayDiv').style.display = "block";
+    }
+
+
+</script>
+{% endblock %}
